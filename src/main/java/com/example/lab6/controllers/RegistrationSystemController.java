@@ -24,6 +24,16 @@ public class RegistrationSystemController {
         this.enrollmentController = enrollmentController;
     }
 
+    public Teacher getTeacherByName(String firstName,String lastName){
+        List<Teacher> teachers = teacherController.getAllTeachers();
+        for(Teacher t :teachers){
+            if(t.getFirstName().equals(firstName) && t.getLastName().equals(lastName)){
+                return t;
+            }
+        }
+        return null;
+    }
+
     public Student getStudentByName(String firstName,String lastName){
         List<Student> students = studentController.getAllStudents();
         for(Student s : students){
@@ -32,6 +42,21 @@ public class RegistrationSystemController {
             }
         }
         return null;
+    }
+
+    public List<Student> getStudentsInTeachersCourses(Teacher t){
+        List<Course> courses = courseController.getAllCourses();
+        List<Student> toReturn = new ArrayList<Student>();
+        for(Course c : courses){
+            Teacher check = getTeacherById(c.getTeacherId());
+            if(check.getFirstName().equals(t.getFirstName())&&check.getLastName().equals(t.getLastName())){
+                List<Enrollment> toAdd = enrollmentController.getAllStudentEnrolledInCourse(c);
+                for(Enrollment e : toAdd){
+                    toReturn.add(studentController.getStudentById(e.getStudentId()));
+                }
+            }
+        }
+        return toReturn;
     }
 
     /**
